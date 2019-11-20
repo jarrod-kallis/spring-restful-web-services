@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,8 +43,24 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 			HttpStatus status, WebRequest request) {
 		super.handleExceptionInternal(ex, body, headers, status, request);
 
-		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-				request.getDescription(false));
+		ExceptionResponse exceptionResponse;
+
+		if (ex instanceof MethodArgumentNotValidException) {
+			MethodArgumentNotValidException validationEx = (MethodArgumentNotValidException) ex;
+
+			String validationError = "";
+			for (ObjectError e : validationEx.getBindingResult().getAllErrors()) {
+				if (validationError.length() > 0) {
+					validationError += ", ";
+				}
+
+				validationError += e.getDefaultMessage();
+			}
+
+			exceptionResponse = new ExceptionResponse(new Date(), "Validation Failed", validationError);
+		} else {
+			exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+		}
 
 		return new ResponseEntity<>(exceptionResponse, status);
 	}

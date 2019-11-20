@@ -2,9 +2,14 @@ package com.in28minutes.rest.webservices.restfulwebservices.user;
 
 import java.util.Date;
 
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 public class User {
 	private int id;
+	@Size(min = 2, message = "User's name should be at least 2 characters")
 	private String name;
+	@Past(message = "Birthday must be in the past")
 	private Date dob;
 
 	public User(int id, String name, Date dob) {
