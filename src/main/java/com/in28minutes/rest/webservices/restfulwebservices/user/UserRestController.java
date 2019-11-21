@@ -1,11 +1,17 @@
 package com.in28minutes.rest.webservices.restfulwebservices.user;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,26 +22,53 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.in28minutes.rest.webservices.restfulwebservices.post.PostRestController;
+
 @RestController
 public class UserRestController {
 
 	@Autowired
 	private UserDaoService service;
 
+	@Autowired
+	private PostRestController postController;
+
 	@GetMapping({ "/users" })
-	public List<User> getUsers() {
-		return service.getAll();
+	public List<EntityModel<User>> getUsers() {
+		List<User> users = service.getAll();
+		List<EntityModel<User>> models = new ArrayList<EntityModel<User>>();
+
+		for (User user : users) {
+			models.add(addLinks(user));
+		}
+
+		return models;
 	}
 
 	@GetMapping("/users/{id}")
-	public User getUser(@PathVariable int id) {
+	public EntityModel<User> getUser(@PathVariable int id) {
 		User user = service.getById(id);
 
 		if (user == null) {
 			throw new UserNotFoundException(id);
 		}
 
-		return user;
+		EntityModel<User> model = addLinks(user);
+
+		return model;
+	}
+
+	private EntityModel<User> addLinks(User user) {
+		// Add links to the returned User class
+		EntityModel<User> model = new EntityModel<User>(user);
+
+		WebMvcLinkBuilder usersLink = linkTo(((UserRestController) methodOn(this.getClass())).getUsers());
+		WebMvcLinkBuilder postsLink = linkTo(
+				((PostRestController) methodOn(postController.getClass())).getPosts(user.getId()));
+		model.add(usersLink.withRel("users"));
+		model.add(postsLink.withRel("posts"));
+
+		return model;
 	}
 
 	@PostMapping({ "/users" })
