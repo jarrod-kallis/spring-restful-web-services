@@ -44,4 +44,5 @@ public class HelloWorldController {
 		return new HelloWorldBean(
 				messageSource.getMessage("hello-world", null, LocaleContextHolder.getLocale()) + ", " + name);
 	}
+
 }
