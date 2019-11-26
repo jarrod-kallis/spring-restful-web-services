@@ -1,7 +1,7 @@
 package com.in28minutes.rest.webservices.restfulwebservices.user;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +34,9 @@ public class UserRestController {
 	private PostRestController postController;
 
 	@GetMapping({ "/users" })
-	public List<EntityModel<User>> getUsers() {
+	public List<Resource<User>> getUsers() {
 		List<User> users = service.getAll();
-		List<EntityModel<User>> models = new ArrayList<EntityModel<User>>();
+		List<Resource<User>> models = new ArrayList<Resource<User>>();
 
 		for (User user : users) {
 			models.add(addLinks(user));
@@ -46,24 +46,24 @@ public class UserRestController {
 	}
 
 	@GetMapping("/users/{id}")
-	public EntityModel<User> getUser(@PathVariable int id) {
+	public Resource<User> getUser(@PathVariable int id) {
 		User user = service.getById(id);
 
 		if (user == null) {
 			throw new UserNotFoundException(id);
 		}
 
-		EntityModel<User> model = addLinks(user);
+		Resource<User> model = addLinks(user);
 
 		return model;
 	}
 
-	private EntityModel<User> addLinks(User user) {
+	private Resource<User> addLinks(User user) {
 		// Add links to the returned User class
-		EntityModel<User> model = new EntityModel<User>(user);
+		Resource<User> model = new Resource<User>(user);
 
-		WebMvcLinkBuilder usersLink = linkTo(((UserRestController) methodOn(this.getClass())).getUsers());
-		WebMvcLinkBuilder postsLink = linkTo(
+		ControllerLinkBuilder usersLink = linkTo(((UserRestController) methodOn(this.getClass())).getUsers());
+		ControllerLinkBuilder postsLink = linkTo(
 				((PostRestController) methodOn(postController.getClass())).getPosts(user.getId()));
 		model.add(usersLink.withRel("users"));
 		model.add(postsLink.withRel("posts"));
