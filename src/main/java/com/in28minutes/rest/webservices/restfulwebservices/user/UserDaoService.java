@@ -12,9 +12,9 @@ public class UserDaoService {
 	private static int userId = 0;
 
 	static {
-		users.add(new User(++userId, "Adam", new Date()));
-		users.add(new User(++userId, "Eve", new Date()));
-		users.add(new User(++userId, "Jack", new Date()));
+		users.add(new User(++userId, "Adam", new Date(), "Adam123"));
+		users.add(new User(++userId, "Eve", new Date(), "Eve321"));
+		users.add(new User(++userId, "Jack", new Date(), "p@ssword"));
 	}
 
 	public List<User> getAll() {
