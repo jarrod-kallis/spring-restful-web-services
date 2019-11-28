@@ -15,3 +15,10 @@ Each resource returned contains hyperlinks to other related resources
 
 ## Nov 2019
 You cannot use Springboot 2.2.2 with Swagger2 & HATEOAS, so you need to downgrade to 2.1.3 (See pom.xml)
+
+## Actuator Monitoring
+[http://localhost:8085/actuator](http://localhost:8085/actuator) <br />
+[http://localhost:8085/actuator/metrics/system.cpu.usage](http://localhost:8085/actuator/metrics/system.cpu.usage)
+
+### HAL Browser
+[http://localhost:8085/browser/index.html](http://localhost:8085/browser/index.html#/)
