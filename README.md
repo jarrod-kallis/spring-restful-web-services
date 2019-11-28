@@ -14,4 +14,4 @@ Each resource returned contains hyperlinks to other related resources
 [http://localhost:8085/swagger-resources/configuration/security](http://localhost:8085/swagger-resources/configuration/security)  <br />
 
 ## Nov 2019
-You can not use Springboot 2.2.2 with Swagger2 & HATEOAS, so you need to downgrade to 2.1.3 (See pom.xml)
+You cannot use Springboot 2.2.2 with Swagger2 & HATEOAS, so you need to downgrade to 2.1.3 (See pom.xml)
