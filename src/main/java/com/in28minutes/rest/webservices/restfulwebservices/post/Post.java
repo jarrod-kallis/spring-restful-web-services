@@ -1,5 +1,8 @@
 package com.in28minutes.rest.webservices.restfulwebservices.post;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+@JsonFilter("postFilter")
 public class Post {
 	private int id;
 	private String message;
