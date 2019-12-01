@@ -12,6 +12,7 @@ public class PostDaoService {
 
 	static {
 		posts.add(new Post(++postId, "My first post: UserId: 1", 1));
+		posts.add(new Post(++postId, "My second post: UserId: 1", 1));
 		posts.add(new Post(++postId, "My first post: UserId: 3", 3));
 	}
 
