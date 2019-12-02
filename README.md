@@ -22,3 +22,8 @@ You cannot use Springboot 2.2.2 with Swagger2 & HATEOAS, so you need to downgrad
 
 ### HAL Browser
 [http://localhost:8085/browser/index.html](http://localhost:8085/browser/index.html#/)
+
+## H2 - In-Memory DB
+
+[http://localhost:8085/h2-console](http://localhost:8085/h2-console) <br/>
+DB URL: jdbc:h2:mem:testdb

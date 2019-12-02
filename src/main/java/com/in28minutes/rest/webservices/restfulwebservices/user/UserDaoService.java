@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,6 +19,9 @@ public class UserDaoService {
 		users.add(new User(++userId, "Eve", new Date(), "Eve321"));
 		users.add(new User(++userId, "Jack", new Date(), "p@ssword"));
 	}
+
+	@Autowired
+	private EntityManager entityManager;
 
 	public List<User> getAll() {
 		return users;

@@ -6,6 +6,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -27,15 +28,20 @@ import com.in28minutes.rest.webservices.restfulwebservices.post.PostRestControll
 @RestController
 public class UserRestController {
 
+//	@Autowired
+//	private UserDaoService service;
+
 	@Autowired
-	private UserDaoService service;
+	private UserRepository repo;
 
 	@Autowired
 	private PostRestController postController;
 
 	@GetMapping({ "/users" })
 	public List<Resource<User>> getUsers() {
-		List<User> users = service.getAll();
+		List<User> users = repo.findAll();
+//		List<User> users = service.getAll();
+
 		List<Resource<User>> models = new ArrayList<Resource<User>>();
 
 		for (User user : users) {
@@ -47,12 +53,14 @@ public class UserRestController {
 
 	@GetMapping("/users/{id}")
 	public Resource<User> getUser(@PathVariable int id) {
-		User user = service.getById(id);
+//		User user = service.getById(id);
+		Optional<User> userWrapper = repo.findById(id);
 
-		if (user == null) {
+		if (userWrapper.isPresent() == false) {
 			throw new UserNotFoundException(id);
 		}
 
+		User user = userWrapper.get();
 		Resource<User> model = addLinks(user);
 
 		return model;
@@ -74,13 +82,16 @@ public class UserRestController {
 	@PostMapping({ "/users" })
 	public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
 		if (user.getId() > 0) {
-			User existingUser = service.getById(user.getId());
-			if (existingUser != null) {
-				throw new UserAlreadyExistsException(existingUser);
+//			User existingUser = service.getById(user.getId());
+			Optional<User> userWrapper = repo.findById(user.getId());
+
+			if (userWrapper.isPresent() == true) {
+				throw new UserAlreadyExistsException(userWrapper.get());
 			}
 		}
 
-		User savedUser = service.create(user);
+//		User savedUser = service.create(user);
+		User savedUser = repo.save(user);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest() // "/users"
 				.path("/{id}") // append "/{id}" to the URL
@@ -97,7 +108,8 @@ public class UserRestController {
 		User updatedUser = null;
 
 		if (user.getId() > 0) {
-			updatedUser = service.update(user);
+//			updatedUser = service.update(user);
+			updatedUser = repo.save(user);
 		}
 
 		if (updatedUser == null) {
@@ -109,17 +121,20 @@ public class UserRestController {
 
 	@DeleteMapping("/users/{id}")
 	public Object deleteUser(@PathVariable int id) {
-		User deleteUser = service.getById(id);
+//		User deleteUser = service.getById(id);
+		Optional<User> userWrapper = repo.findById(id);
 
-		if (deleteUser == null) {
+		if (userWrapper.isPresent() == false) {
 			throw new UserNotFoundException(id);
 		}
 
-		boolean deleteSuccess = service.delete(id);
+//		boolean deleteSuccess = service.delete(id);
+		repo.delete(userWrapper.get());
 
 		Object objResult = new Object() {
-			User user = deleteUser;
-			boolean success = deleteSuccess;
+			User user = userWrapper.get();
+//			boolean success = deleteSuccess;
+			boolean success = true;
 
 			@SuppressWarnings("unused")
 			public User getUser() {
