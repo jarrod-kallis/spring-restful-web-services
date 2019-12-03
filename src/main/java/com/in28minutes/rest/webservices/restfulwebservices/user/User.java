@@ -1,21 +1,25 @@
 package com.in28minutes.rest.webservices.restfulwebservices.user;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.in28minutes.rest.webservices.restfulwebservices.post.Post;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "Something creative describing this User class")
-// Don't display the password field in a GET response, but allow it to be set in a POST
+// Don't display the password field in a GET response, but allow it to be set in
+// a POST
 @JsonIgnoreProperties(allowSetters = true, value = { "password" })
 // JPA Managed Entity
 @Entity
@@ -35,11 +39,14 @@ public class User {
 	@ApiModelProperty(notes = BIRTHDAY_RESTRICTION)
 	private Date dob;
 
-	// Don't display this field in the REST GET response, but you also can't set it
-	// in a POST
-//	@JsonIgnore
+	// Don't display this field in the REST GET response, but you also can't set
+	// it in a POST
+	// @JsonIgnore
 	@JsonProperty("password")
 	private String password;
+
+	@OneToMany(mappedBy = "user")
+	private List<Post> posts;
 
 	protected User() {
 		super();
@@ -83,6 +90,14 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
 	}
 
 	public void update(User user) {

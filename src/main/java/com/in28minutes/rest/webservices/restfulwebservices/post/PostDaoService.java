@@ -10,20 +10,20 @@ public class PostDaoService {
 	private static List<Post> posts = new ArrayList<Post>();
 	private static int postId = 0;
 
-	static {
-		posts.add(new Post(++postId, "My first post: UserId: 1", 1));
-		posts.add(new Post(++postId, "My second post: UserId: 1", 1));
-		posts.add(new Post(++postId, "My first post: UserId: 3", 3));
-	}
+	// static {
+	// posts.add(new Post(++postId, "My first post: UserId: 1", 1));
+	// posts.add(new Post(++postId, "My second post: UserId: 1", 1));
+	// posts.add(new Post(++postId, "My first post: UserId: 3", 3));
+	// }
 
 	public List<Post> getAll(int userId) {
 		List<Post> userPosts = new ArrayList<Post>();
 
-		for (Post post : posts) {
-			if (post.getUserId() == userId) {
-				userPosts.add(post);
-			}
-		}
+		// for (Post post : posts) {
+		// if (post.getUserId() == userId) {
+		// userPosts.add(post);
+		// }
+		// }
 		return userPosts;
 	}
 

@@ -28,8 +28,8 @@ import com.in28minutes.rest.webservices.restfulwebservices.post.PostRestControll
 @RestController
 public class UserRestController {
 
-//	@Autowired
-//	private UserDaoService service;
+	// @Autowired
+	// private UserDaoService service;
 
 	@Autowired
 	private UserRepository repo;
@@ -40,7 +40,7 @@ public class UserRestController {
 	@GetMapping({ "/users" })
 	public List<Resource<User>> getUsers() {
 		List<User> users = repo.findAll();
-//		List<User> users = service.getAll();
+		// List<User> users = service.getAll();
 
 		List<Resource<User>> models = new ArrayList<Resource<User>>();
 
@@ -53,7 +53,7 @@ public class UserRestController {
 
 	@GetMapping("/users/{id}")
 	public Resource<User> getUser(@PathVariable int id) {
-//		User user = service.getById(id);
+		// User user = service.getById(id);
 		Optional<User> userWrapper = repo.findById(id);
 
 		if (userWrapper.isPresent() == false) {
@@ -61,6 +61,11 @@ public class UserRestController {
 		}
 
 		User user = userWrapper.get();
+		// Explicitly need to retrieve the posts' details, otherwise we will
+		// just have the posts' ids
+		// List<Post> posts = user.getPosts();
+		// System.out.println(posts);
+
 		Resource<User> model = addLinks(user);
 
 		return model;
@@ -82,7 +87,7 @@ public class UserRestController {
 	@PostMapping({ "/users" })
 	public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
 		if (user.getId() > 0) {
-//			User existingUser = service.getById(user.getId());
+			// User existingUser = service.getById(user.getId());
 			Optional<User> userWrapper = repo.findById(user.getId());
 
 			if (userWrapper.isPresent() == true) {
@@ -90,12 +95,13 @@ public class UserRestController {
 			}
 		}
 
-//		User savedUser = service.create(user);
+		// User savedUser = service.create(user);
 		User savedUser = repo.save(user);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest() // "/users"
 				.path("/{id}") // append "/{id}" to the URL
-				.buildAndExpand(savedUser.getId()) // Assign user id to URL placeholder
+				.buildAndExpand(savedUser.getId()) // Assign user id to URL
+													// placeholder
 				.toUri();
 
 		// In the header of the response you will see something like:
@@ -108,7 +114,7 @@ public class UserRestController {
 		User updatedUser = null;
 
 		if (user.getId() > 0) {
-//			updatedUser = service.update(user);
+			// updatedUser = service.update(user);
 			updatedUser = repo.save(user);
 		}
 
@@ -121,19 +127,19 @@ public class UserRestController {
 
 	@DeleteMapping("/users/{id}")
 	public Object deleteUser(@PathVariable int id) {
-//		User deleteUser = service.getById(id);
+		// User deleteUser = service.getById(id);
 		Optional<User> userWrapper = repo.findById(id);
 
 		if (userWrapper.isPresent() == false) {
 			throw new UserNotFoundException(id);
 		}
 
-//		boolean deleteSuccess = service.delete(id);
+		// boolean deleteSuccess = service.delete(id);
 		repo.delete(userWrapper.get());
 
 		Object objResult = new Object() {
 			User user = userWrapper.get();
-//			boolean success = deleteSuccess;
+			// boolean success = deleteSuccess;
 			boolean success = true;
 
 			@SuppressWarnings("unused")
